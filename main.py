@@ -1,3 +1,4 @@
+import os
 from PubSubHandler import PubSubHandler
 import asyncio
 import obspython as S
@@ -8,21 +9,47 @@ def script_description():
            "redeemed "
 
 
-def script_properties():
-    props = S.obs_properties_create()
-    S.obs_properties_add_button(props, "button1", "Activate Screen Saver Script", boot_pubsubclient())
-    return props
+# Makes the button that activates the script when pressed
+# def script_properties():
+#     props = S.obs_properties_create()
+#     S.obs_properties_add_button(props, "button1", "Activate Screen Saver Script", boot_pubsubclient())
+#     return props
 
 
-def boot_pubsubclient():
-    client = PubSubHandler()
-    loop = asyncio.get_event_loop()
+# async def boot_pubsubclient():
+client = PubSubHandler()
+loop = asyncio.get_event_loop()
 
-    connection = loop.run_until_complete(client.connect())
+if not loop.run_until_complete(client.connect()):
+    exit(1)
 
-    tasks = [
-        asyncio.ensure_future(client.pingus(connection)),
-        asyncio.ensure_future(client.recv_msg(connection)),
-    ]
+connection = loop.run_until_complete(client.connect())
 
-    loop.run_until_complete(asyncio.wait(tasks))
+tasks = [
+    asyncio.ensure_future(client.pingus(connection)),
+    asyncio.ensure_future(client.recv_msg(connection)),
+]
+
+for task in tasks:
+    loop.create_task(task)
+
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    pass
+except Exception as e:
+    print(f'Exception caught: {e!r}')
+
+# loop.run_until_complete(asyncio.wait(tasks))
+# future = asyncio.run_coroutine_threadsafe(coro, loop)
+#
+# try:
+#     result = future.result(timeout=5000)
+# except concurrent.futures.TimeoutError:
+#     print("Coroutines took too long, killing tasks now...")
+#     future.cancel()
+# except Exception as e:
+#     print(f"Exception raised: {e!r}")
+# else:
+#     print(f"Coroutine finished with {result!r}")
+

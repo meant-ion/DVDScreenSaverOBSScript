@@ -7,10 +7,6 @@ import obspython as S
 # done with assistance from @GunP0P0 on twitch: twitch.tv/GunP0P0
 
 # upper limit for moving the camera in scene: 3840, 2160
-# TODO: 1: Figure out how to get the dimension of the camera (DONE)
-#       2: Figure out how to get the dimension of the current scene (DONE)
-#       3: Using those dimensions, get the face cam to not go out of bounds of the current scene (DONE)
-#       4: Animate the camera moving around for ~1 minute
 
 # vector flip from @GunP0P0: if (position.y > max_height || postition.y < 0) speed.y *= -1
 
@@ -21,7 +17,7 @@ class CameraMover:
         self.scale = S.vec2()
         self.speed = {"x": 0.0, "y": 0.0}
         self.init_pos = {"x": 0.0, "y": 0.0}
-        # want the colors to be a bit more random, so we keep track of the last color used so it doesn't pop up twice
+        # want the colors to be a bit more random, so we keep track of the last color used, so it doesn't pop up twice
         # in a row
         self.last_color = None
 
